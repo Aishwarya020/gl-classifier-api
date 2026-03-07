@@ -43,7 +43,7 @@ warnings.filterwarnings("ignore")
 # ════════════════════════════════════════════════════════════════════════════
 # CONFIGURATION
 # ════════════════════════════════════════════════════════════════════════════
-MODEL          = "claude-sonnet-4-20250514"
+MODEL          = "claude-sonnet-4-6"
 L1_THRESHOLD   = 0.95   # fuzzy score  ≥ this → Layer 1
 L2_THRESHOLD   = 0.40   # cosine sim   ≥ this → Layer 2
 L2_CONF_HIGH   = 0.90   # cosine ≥ 0.80
