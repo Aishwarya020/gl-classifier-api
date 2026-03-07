@@ -393,6 +393,10 @@ Rules:
 
     except Exception as e:
         print(f"  ⚠  Layer 3 batch error: {e}")
+        try:
+          print(f"  ⚠  Anthropic response body: {resp.text}")
+        except:
+          pass
         return [_fallback() for _ in transactions]
 
 
