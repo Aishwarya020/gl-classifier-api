@@ -1,0 +1,27 @@
+# Render.com deployment configuration
+# Docs: https://render.com/docs/render-yaml-spec
+#
+# This file tells Render how to build and run the GL Classifier API.
+# On first deploy, go to the Render dashboard and add the environment
+# variable ANTHROPIC_API_KEY under Environment → Secret Files.
+
+services:
+  - type: web
+    name: gl-classifier-api
+    runtime: python
+    plan: free
+
+    # Build step: install all dependencies
+    buildCommand: pip install -r requirements.txt
+
+    # Start the FastAPI server
+    # --host 0.0.0.0 required for Render's networking
+    # --workers 1    keeps memory within the free tier limit
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT --workers 1
+
+    # Environment variables
+    # ANTHROPIC_API_KEY is set manually in the Render dashboard (not here)
+    # so it never ends up committed to the git repo
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.0"
