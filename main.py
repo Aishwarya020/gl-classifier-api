@@ -45,12 +45,12 @@ ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
 # ════════════════════════════════════════════════════════════════════════════
 class Transaction(BaseModel):
     date:       str
-    desc_raw:   str
+    description:         str
     amount:     float
-    gl_code:    str
+    assigned_gl_code:    str
     gl_class:   str
-    confidence: float
-    method:     str
+    confidence_score: float
+    match_method:        str
     reasoning:  str
 
 
@@ -118,10 +118,10 @@ async def classify(
         raise HTTPException(status_code=500, detail=f"Classification pipeline error: {e}")
 
     # ── Build summary counts ──────────────────────────────────────────────
-    l1_count     = sum(1 for r in results if "Layer 1" in r.get("method", ""))
-    l2_count     = sum(1 for r in results if "Layer 2" in r.get("method", ""))
-    l3_count     = sum(1 for r in results if "Layer 3" in r.get("method", "") or "Claude" in r.get("method", ""))
-    review_count = sum(1 for r in results if r.get("gl_code") == "REVIEW")
+    l1_count     = sum(1 for r in results if "Layer 1" in r.get("match_method", ""))
+    l2_count     = sum(1 for r in results if "Layer 2" in r.get("match_method", ""))
+    l3_count     = sum(1 for r in results if "Layer 3" in r.get("match_method", "") or "Claude" in r.get("match_method", ""))
+    review_count = sum(1 for r in results if r.get("assigned_gl_code") == "REVIEW")
 
     return ClassifyResponse(
         total=len(results),
@@ -132,12 +132,12 @@ async def classify(
         transactions=[
             Transaction(
                 date=r.get("date", ""),
-                desc_raw=r.get("desc_raw", ""),
+                description=r.get("description", ""),
                 amount=float(r.get("amount", 0)),
-                gl_code=r.get("gl_code", "REVIEW"),
+                assigned_gl_code=r.get("assigned_gl_code", "REVIEW"),
                 gl_class=r.get("gl_class", ""),
-                confidence=float(r.get("confidence", 0.1)),
-                method=r.get("method", ""),
+                confidence_score=float(r.get("confidence_score", 0.1)),
+                match_method=r.get("match_method", ""),
                 reasoning=r.get("reasoning", ""),
             )
             for r in results
